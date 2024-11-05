@@ -27,12 +27,17 @@ RUN apt-get update && apt-get install -y \
     libmpdec-dev \
     liblz4-dev
 
+
+# Use ARG to receive environment variables from .env.dev
+ARG PYENV_ROOT
+ARG PATH
+
+# Set up environment variables inside the container
+ENV PYENV_ROOT=${PYENV_ROOT}
+ENV PATH=${PATH}
+
 # Install pyenv
 RUN curl https://pyenv.run | bash
-
-# Set up pyenv environment variables
-ENV PYENV_ROOT="/root/.pyenv"
-ENV PATH="$PYENV_ROOT/shims:$PYENV_ROOT/bin:$PATH"
 
 # Install Poetry
 RUN curl -sSL https://install.python-poetry.org | python3 -
