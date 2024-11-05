@@ -1,0 +1,40 @@
+version: '3.8'
+
+services:
+  development:
+    build:
+      context: .
+      dockerfile: Dockerfile_devcontainer
+    volumes:
+      - .:/workspace
+    env_file:
+      - .env.dev
+    environment:
+      - PYTHONUNBUFFERED=1
+    ports:
+      - "8000:8000"
+    depends_on:
+      - local_database
+    command: /bin/bash -c "while :; do sleep 10; done"
+    networks:
+      - my_custom_network  # Attach `development` to `my_custom_network`
+
+  local_database:
+    image: postgres:latest
+    environment:
+      POSTGRES_DB: my_database
+      POSTGRES_USER: my_user
+      POSTGRES_PASSWORD: my_password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - my_custom_network  # Attach `local_database` to `my_custom_network`
+
+volumes:
+  postgres_data:
+
+networks:
+  my_custom_network:
+    driver: bridge  # `bridge` is the default driver
