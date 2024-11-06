@@ -6,27 +6,18 @@ RUN apt-get update && apt-get install -y \
     curl \
     git \
     build-essential \
-    libssl-dev \
-    zlib1g-dev \
-    libbz2-dev \
-    libreadline-dev \
-    libsqlite3-dev \
     wget \
     llvm \
-    libncurses5-dev \
-    libncursesw5-dev \
     xz-utils \
     tk-dev \
     libffi-dev \
     liblzma-dev \
-    python-openssl \
     libgdbm-dev \
     libnss3-dev \
     libdb5.3-dev \
     libgdbm-compat-dev \
-    libmpdec-dev \
-    liblz4-dev
-
+    liblz4-dev \
+    && apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 # Use ARG to receive environment variables from .env.dev
 ARG PYENV_ROOT
@@ -34,7 +25,7 @@ ARG PATH
 
 # Set up environment variables inside the container
 ENV PYENV_ROOT=${PYENV_ROOT}
-ENV PATH=${PATH}
+ENV PATH=${PATH}:/root/.local/bin
 
 # Install pyenv
 RUN curl https://pyenv.run | bash
@@ -42,12 +33,16 @@ RUN curl https://pyenv.run | bash
 # Install Poetry
 RUN curl -sSL https://install.python-poetry.org | python3 -
 
+# Verify Poetry installation
+# This command will fail if Poetry is not in PATH
+RUN poetry --version  
+
 # Install Python version with pyenv
 RUN pyenv install 3.11.10
 RUN pyenv global 3.11.10
 
-# Set poetry to use pyenv's Python
-RUN poetry env use $(pyenv which python)
+# Chech pyenve version
+RUN pyenv --version
 
 # Copy the current directory into the container
 COPY . /workspace
