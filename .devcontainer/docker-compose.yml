@@ -3,13 +3,8 @@ services:
     build:
       context: .
       dockerfile: Dockerfile_devcontainer
-      args:
-        PYENV_ROOT: ${PYENV_ROOT}
-        PATH: ${PATH}
     volumes:
       - .:/workspace
-    env_file:
-      - .env.development
     environment:
       - PYTHONUNBUFFERED=1
     ports:

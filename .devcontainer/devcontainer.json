@@ -1,5 +1,5 @@
 {
-    "name": "Python Dev Container",
+    "name": "my_python_dev_container",
     "dockerComposeFile": "docker-compose.yml",
     "service": "development",
     "workspaceFolder": "/workspace",
