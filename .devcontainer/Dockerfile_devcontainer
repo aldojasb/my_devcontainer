@@ -1,0 +1,38 @@
+# Use a lightweight Python image
+FROM python:3.11
+
+# Install pyenv dependencies
+RUN apt-get update && apt-get install -y \
+    curl \
+    git \
+    build-essential \
+    wget \
+    llvm \
+    xz-utils \
+    tk-dev \
+    libffi-dev \
+    liblzma-dev \
+    libgdbm-dev \
+    libnss3-dev \
+    libdb5.3-dev \
+    libgdbm-compat-dev \
+    liblz4-dev \
+    && apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+
+# Set up environment variables for pyenv and add Poetry to PATH
+ENV PYENV_ROOT="/root/.pyenv"
+ENV PATH="$PYENV_ROOT/shims:$PYENV_ROOT/bin:/root/.local/bin:$PATH"
+
+# Install pyenv
+RUN curl https://pyenv.run | bash
+
+# Install Poetry
+RUN curl -sSL https://install.python-poetry.org | python3 -
+
+# Install Python version with pyenv
+RUN pyenv install 3.11.10
+RUN pyenv global 3.11.10
+
+# Copy the current directory into the container
+COPY . /workspace
+WORKDIR /workspace
