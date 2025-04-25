@@ -37,6 +37,17 @@ RUN pyenv global 3.11.10
 # Configure Poetry to create virtualenvs in the project directory
 RUN poetry config virtualenvs.in-project true
 
+# Install Zsh
+RUN apt-get update && apt-get install -y zsh && \
+    apt-get clean && rm -rf /var/lib/apt/lists/*
+
+# Install Oh My Zsh (unattended)
+RUN git clone https://github.com/ohmyzsh/ohmyzsh.git ~/.oh-my-zsh && \
+    cp ~/.oh-my-zsh/templates/zshrc.zsh-template ~/.zshrc
+
+# (Optional) Set Zsh as the default shell for root
+RUN chsh -s "$(which zsh)" root
+
 # Copy the current directory into the container
 COPY . /workspace
 WORKDIR /workspace
