@@ -37,6 +37,13 @@ RUN pyenv global 3.11.10
 # Configure Poetry to create virtualenvs in the project directory
 RUN poetry config virtualenvs.in-project true
 
+# ──────────────────────────────────────────────────────────────────────────────
+# Install pipx and globally install Cookiecutter
+RUN python3 -m pip install --upgrade pip && \
+    python3 -m pip install --user pipx && \
+    pipx install cookiecutter
+# ──────────────────────────────────────────────────────────────────────────────
+
 # Install Zsh
 RUN apt-get update && apt-get install -y zsh && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
