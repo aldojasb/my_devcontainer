@@ -1,36 +1,57 @@
 services:
-  development:
+  personal_dev:  # Your main development container
+    container_name: personal-dev-container
     build:
-      context: .
-      dockerfile: Dockerfile_devcontainer
+      context: .  # Build from the current directory
+      dockerfile: Dockerfile_devcontainer  # Specify the Dockerfile to use
     volumes:
-      - .:/workspace
+      - .:/workspace  # Mounts the current folder to /workspace in the container
     environment:
-      - PYTHONUNBUFFERED=1
+      - PYTHONUNBUFFERED=1  # ensures Python output is shown immediately (good for logging/debugging)
     ports:
-      - "8000:8000"
+      - "8000:8000"  # For serving your application (e.g., FastAPI, Flask)
     depends_on:
-      - local_database
-    command: /bin/bash -c "while :; do sleep 10; done"
+      - personal_database  # Waits for DB container to be up before starting
+    command: /bin/bash -c "while :; do sleep 10; done"  # Keeps container running for VSCode to attach
     networks:
-      - my_custom_network  # Attach `development` to `my_custom_network`
+      - personal_dev_network  # Uses an isolated network shared with other services - Attach `personal_dev` to `personal_dev_network`
+  
 
-  local_database:
-    image: postgres:latest
+  personal_database:  # PostgreSQL database container
+    container_name: personal-PostgreSQL-db
+    image: postgres:latest  # Official PostgreSQL image
     environment:
       POSTGRES_DB: my_database
       POSTGRES_USER: my_user
       POSTGRES_PASSWORD: my_password
     ports:
-      - "5432:5432"
+      - "15432:5432"  # Maps PostgreSQL internal port to host port 15432 (avoids conflict with other ones)
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - postgres_data:/var/lib/postgresql/data  # Persists DB data
     networks:
-      - my_custom_network  # Attach `local_database` to `my_custom_network`
+      - personal_dev_network # Attach `personal_database` to `personal_dev_network`
+
+  pg_admin:  # GUI for managing PostgreSQL
+    container_name: personal-pgadmin
+    image: dpage/pgadmin4:latest  # Popular pgAdmin web interface
+    restart: always  # Keeps restarting if it crashes
+    environment:
+      PGADMIN_DEFAULT_EMAIL: personal@localhost.com  # Login email for pgAdmin
+      PGADMIN_DEFAULT_PASSWORD: my_pgadmin_password  # Login password
+    ports:
+      - "18888:80"  # Exposes pgAdmin on port 18888 (different from other setups)
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin  # Persists pgAdmin server settings and connections
+    networks:
+      - personal_dev_network
+    depends_on:
+      - personal_database  # Waits for DB to be up
+
 
 volumes:
-  postgres_data:
+  postgres_data:  # Named volume for PostgreSQL
+  pgadmin_data:   # Named volume for pgAdmin
 
 networks:
-  my_custom_network:
-    driver: bridge  # `bridge` is the default driver
+  personal_dev_network:
+    driver: bridge  # Default bridge network for container communication - `bridge` is the default driver.
