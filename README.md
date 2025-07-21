@@ -1,3 +1,86 @@
+# 🛠️ Personal Dev Container Setup
+
+This project provides a fully isolated personal development environment using **Dev Containers + Docker Compose**, complete with:
+- Python development tools
+- PostgreSQL database
+- `pgAdmin` for visual DB inspection
+
+---
+
+## Services Overview
+
+### 👨‍💻 `personal_dev`
+Your main coding environment inside a container:
+- Based on a Python image with custom tooling
+- Automatically mounts the current project to `/workspace`
+- Exposes port `8000` for your local app
+
+### 🛢️ `personal_database`
+A PostgreSQL service for local DB development:
+- Credentials:
+  - **DB**: `my_database`
+  - **User**: `my_user`
+  - **Password**: `my_password`
+- Exposed on port **15432** (so it doesn't conflict with work projects)
+
+### 🧠 `pg_admin`
+A web-based PostgreSQL GUI:
+- Runs on port `18888`
+- Login:
+  - **Email**: `personal@localhost.com`
+  - **Password**: `my_pgadmin_password`
+
+---
+
+## Getting Started
+
+### 1. Open in VS Code
+Use the Dev Containers extension to open the project folder in a container:
+
+Remote-Containers: Open Folder in Container
+
+
+### 2. Install Your Project Tools
+Once inside:
+```bash
+cd /workspace
+poetry install  # Or use pip install -r requirements.txt
+```
+
+### 3. Launch Your App
+If you're using FastAPI, for example:
+
+```bash
+uvicorn app.main:app --host 0.0.0.0 --port 8000
+```
+
+Then visit: http://localhost:8000
+
+
+## Using pgAdmin
+Open your browser and go to:
+
+http://localhost:18888
+Log in using:
+
+Email: personal@localhost.com
+
+Password: my_pgadmin_password
+
+Register a new server:
+
+Name: Local Postgres
+
+Host: personal_database
+
+Port: 5432
+
+Username: my_user
+
+Password: my_password
+
+---
+
 # Benefits and Downsides of Working with Dev Containers
 
 ## Benefits of Working with Dev Containers
