@@ -1,4 +1,4 @@
-# 🛠️ Personal Dev Container Setup
+# Personal Dev Container Setup
 
 This project provides a fully isolated personal development environment using **Dev Containers + Docker Compose**, complete with:
 - Python development tools
@@ -9,13 +9,13 @@ This project provides a fully isolated personal development environment using **
 
 ## Services Overview
 
-### 👨‍💻 `personal_dev`
+### `personal_dev`
 Your main coding environment inside a container:
 - Based on a Python image with custom tooling
 - Automatically mounts the current project to `/workspace`
 - Exposes port `8000` for your local app
 
-### 🛢️ `personal_database`
+### `personal_database`
 A PostgreSQL service for local DB development:
 - Credentials:
   - **DB**: `my_database`
@@ -23,7 +23,7 @@ A PostgreSQL service for local DB development:
   - **Password**: `my_password`
 - Exposed on port **15432** (so it doesn't conflict with work projects)
 
-### 🧠 `pg_admin`
+### `pg_admin`
 A web-based PostgreSQL GUI:
 - Runs on port `18888`
 - Login:
